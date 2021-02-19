@@ -1,0 +1,67 @@
+--Revenue for each vehicle
+SELECT car.car_modelname, count(contract.car_modelname)*contract.price as revenue
+FROM car, contract
+WHERE car.car_modelname = contract.car_modelname
+GROUP BY car.car_modelname, contract.price
+ORDER BY COUNT(contract.car_modelname)*contract.price DESC;
+
+--sales performance
+SELECT salesemployee_id, CONCAT(lname,fname) AS salesemployee_name, COUNT(salesemployee_id) AS sales performance, SUM(price) AS sum_of_sales
+FROM contract,employee
+WHERE salesemployee_id = employee_id
+GROUP BY salesemployee_id, lname,fname
+ORDER BY sum_of_sales DESC;
+
+--Monthly sales quantity
+SELECT TO_CHAR(contract_date,'yyyy-mm') AS month, COUNT(*) AS quantity
+FROM contract 
+GROUP BY TO_CHAR(contract_date,'yyyy-mm')
+ORDER BY TO_CHAR(contract_date,'yyyy-mm');
+
+--Number of people participating in car manufacturing
+SELECT CAR_MODELNAME AS, COUNT(engineer_id) AS number_of_engineers
+FROM production
+GROUP BY car_modelname
+ORDER BY car_modelname;
+
+--People who are working with a particular engineer on a vehicle
+SELECT DISTINCT engineer_id, car_modelname
+FROM production
+WHERE car_modelname IN
+(SELECT car_modelname FROM production WHERE Engineer_ID='E020')
+MINUS
+SELECT engineer_id, car_modelname
+FROM production
+WHERE Engineer_ID='E020';
+
+--The model name of the vehicle in which the part is used
+SELECT car_modelname, up_modelname AS parts_name
+FROM production
+ORDER BY car_modelname, up_modelname;
+
+--The wholesale name and wholesale number available to purchase the part
+SELECT part.part_modelname, wholesale.name, wholesale.Phone#
+FROM part, wholesalepart,wholesale 
+WHERE part.part_modelname=wholesalepart.wp_modelname
+AND wholesalepart.wholesale_license#=wholesale.license#;
+
+--List of parts used in automobiles
+SELECT car_modelname, wp_modelname, price
+FROM production, wholesalepart
+WHERE production.up_modelname = wholesalepart.wp_modelname
+AND production.car_modelname = &SEARCHMODEL
+ORDER BY price;
+
+--Preferred vehicles subject to customer conditions (gender, etc.)
+SELECT customer.sex, contract.car_modelname
+FROM customer, contract
+WHERE customer.customer_ssn=contract.customer_ssn
+GROUP BY customer.sex, contract.car_modelname
+ORDER BY customer.sex;
+
+--Number of vehicle purchases based on insurance coverage
+SELECT customer.ins_joinstatus, COUNT(contract.contract#) AS quantity
+FROM customer, contract
+WHERE customer.customer_ssn=contract.customer_ssn
+GROUP BY customer.ins_joinstatus
+ORDER BY customer.ins_joinstatus;
