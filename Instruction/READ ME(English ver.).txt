@@ -1,0 +1,3 @@
+1. This project was established and carried out based on the products of Hyundai Motor, and both the requirements and the results were determined and completed by the team.
+
+2. Participating field: ER Model, Logical Modeling, Developed Part of INSERT and QUERY file using Oracle DBMS
